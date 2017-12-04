@@ -13,5 +13,5 @@ setup(
     license = 'GPL V3',
     author = 'David Froger',
     author_email = 'david.froger@mailoo.org',
-    requires = ['aiohttp']
+    install_requires = ['aiohttp']
 )
