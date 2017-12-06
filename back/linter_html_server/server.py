@@ -1,8 +1,12 @@
 import argparse
 import uuid
+import json
+import tempfile
 
 from aiohttp import web
 import aiohttp
+
+from . import flow
 
 
 # All front ws connected.
@@ -22,13 +26,30 @@ def parse_command_line():
     return args
 
 
-async def flow(request):
-    data = await request.post()
-    f = data['file'].file
-    content = f.read()
-    print(type(content), content)
+async def handle_flow(request):
+    reader = await request.multipart()
+    r = await reader.next()
+    filename = r.filename
+
+    # TODO: only hold chunk of file in memory, and send chunk to file to
+    # websockets.
+    #https://aiohttp.readthedocs.io/en/stable/web.html#file-uploads
+    size = 0
+    with tempfile.TemporaryFile() as f:
+        while True:
+            chunk = await r.read_chunk()
+            if not chunk:
+                break
+            size += len(chunk)
+            f.write(chunk)
+
+        f.seek(0)
+        flow_output = f.read().decode()
+
+    errors = flow.extract_errors(flow_output)
+    data = json.dumps(errors)
     for ws in allws.values():
-        await ws.send_str(content.decode())
+        await ws.send_str(data);
     return web.Response(text='ok')
 
 
@@ -64,6 +85,6 @@ def main():
     app = web.Application()
 
     app.router.add_get('/ws', websocket_handler)
-    app.router.add_post('/flow', flow)
+    app.router.add_post('/flow', handle_flow)
 
     web.run_app(app, host=args.host, port=args.port)
