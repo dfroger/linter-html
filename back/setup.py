@@ -8,6 +8,7 @@ setup(
     entry_points = {
         'console_scripts': [
             'linter-html-server = server:main',
+            'linter-html-client = client:main',
         ],
     },
     license = 'GPL V3',
