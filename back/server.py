@@ -1,6 +1,12 @@
 import argparse
+import uuid
+
 from aiohttp import web
 import aiohttp
+
+
+# All front ws connected.
+allws = {}
 
 
 def parse_command_line():
@@ -21,25 +27,33 @@ async def flow(request):
     f = data['file'].file
     content = f.read()
     print(type(content), content)
-    #import pdb; pdb.set_trace()
+    for ws in allws.values():
+        await ws.send_str(content.decode())
     return web.Response(text='ok')
 
 
 async def websocket_handler(request):
+    print('websocket_handler')
     ws = web.WebSocketResponse()
     await ws.prepare(request)
+    wsid = uuid.uuid4()
+    allws[wsid] = ws
 
     async for msg in ws:
+        print('message')
         if msg.type == aiohttp.WSMsgType.TEXT:
             if msg.data == 'close':
                 await ws.close()
+                allws.pop(wsid)
             else:
                 print('Received: ', msg.data)
                 await ws.send_str(msg.data + '/answer')
         elif msg.type == aiohttp.WSMsgType.ERROR:
             print(f'ws connection closed with exception {ws.exception()}')
+            allws.pop(wsid)
 
     print('websocket connection closed')
+    allws.pop(wsid)
 
     return ws
 
