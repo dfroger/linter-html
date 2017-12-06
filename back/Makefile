@@ -1,6 +1,8 @@
 serve: venv/bin/linter-html-server
 	./$<
 
+setup: venv/bin/linter-html-server
+
 venv/bin/linter-html-server: venv
 	./venv/bin/pip install -e .
 
