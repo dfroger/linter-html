@@ -1,4 +1,4 @@
-export default function listenServer(setFlowData) {
+export default function listenServer(ondata) {
 
   const port = 4444;
   const host = '0.0.0.0'
@@ -19,7 +19,7 @@ export default function listenServer(setFlowData) {
   };
 
   ws.onmessage = event => {
-      setFlowData(JSON.parse(event.data));
+      ondata(JSON.parse(event.data));
   };
 
 }

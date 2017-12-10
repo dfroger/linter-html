@@ -11,6 +11,10 @@ import { setFlowData } from './actions';
 
 import listenServer from './listen';
 
+function ondata(data) {
+    store.dispatch(setFlowData(data));
+}
+
 const reducer = combineReducers({
     flow: flowReducer,
     path: pathReducer,
@@ -20,7 +24,7 @@ const store = createStore(
     reducer,
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
-listenServer(data => store.dispatch(setFlowData(data)));
+listenServer(ondata);
 
 ReactDOM.render(
     <Provider store={store}>

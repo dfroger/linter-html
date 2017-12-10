@@ -14,6 +14,8 @@ class Sunburst extends Component {
         const height = 500;
         const radius = Math.min(width, height) / 2;
 
+        this.svg.text('');
+
         this.svg.attr("width", width)
            .attr("height", height)
            .append("g")
@@ -44,6 +46,7 @@ class Sunburst extends Component {
             .attr('d', arc);
 
         this.svg.select('g').selectAll('path.node')
+            // TODO: clicked opacity should react to store change.
             .on('click', clicked  => {
                 const rootPath = clicked.path(root);
                 this.props.setPath(rootPath.reverse().map(d => d.data.name));
