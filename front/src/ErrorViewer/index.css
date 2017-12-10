@@ -1,0 +1,12 @@
+.error-message {
+  background-color: #e6e6e6;
+  border: 1px solid #e6e6e6;
+  color: black;
+  font-family: "Courier New", Courier, monospace;
+  padding: 5px;
+}
+
+p.error-line {
+    margin: 0;
+    padding: 0;
+}

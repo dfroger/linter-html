@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as d3 from 'd3';
 
+import './index.css';
 
 function pathToNode(root, path) {
     let node = root;
@@ -19,7 +20,11 @@ function nodeToPath(root, node) {
 
 class FlowError extends Component {
     render() {
-        return this.props.lines.map(line => <p>{line}</p>);
+        return this.props.children.map((line,i) => (
+            <p key={i} className="error-line">
+                {line}
+            </p>
+        ));
     }
 }
 
@@ -30,7 +35,11 @@ class FlowFileErrors extends Component {
             <section>
                 <h3>{this.props.filepath}</h3>
                 <ul>
-                    {this.props.errors.map(e => <li>{e}</li>)}
+                    {this.props.errors.map((error,i) => (
+                        <li key={i} className="error-message">
+                            <FlowError>{error}</FlowError>
+                        </li>
+                    ))}
                 </ul>
             </section>
         );
