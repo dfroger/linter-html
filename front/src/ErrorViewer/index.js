@@ -34,7 +34,7 @@ class FlowFileErrors extends Component {
         return (
             <section>
                 <h3>{this.props.filepath}</h3>
-                <ul>
+                <ul className="error-file">
                     {this.props.errors.map((error,i) => (
                         <li key={i} className="error-message">
                             <FlowError>{error}</FlowError>
