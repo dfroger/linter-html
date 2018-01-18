@@ -1,5 +1,4 @@
 from typing import List
-from cgi import escape
 
 
 class ParseError(Exception):
@@ -37,11 +36,10 @@ class Node:
                 raise NodeError(f'Node {self.name} has no child {name}')
 
     def as_dict(self):
-        # TODO: escape required?
         return {
             'name': self.name,
             'children': [ child.as_dict() for child in self.children ],
-            'errors': [[escape(line).replace(' ', '\u00A0') for line in m.lines] for m in self.messages]
+            'errors': [[line.replace(' ', '\u00A0') for line in m.lines] for m in self.messages]
         }
 
 
