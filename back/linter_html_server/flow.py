@@ -52,25 +52,20 @@ def add_message(root: Node, path: List[str], msg):
 
 def parse_header(header):
     # something like:
-    # Error: src/components/DateLabel/index.js:12
+    # Error ----------------------------------- widgets/redux.js:11:10
     words = header.split()
-    if len(words) != 2 or words[0] != 'Error:':
+    if len(words) != 3 or words[0] != 'Error':
         raise ParseError
-    filepath, linenum = words[1].split(':')
+    filepath, linenum, columnum = words[2].split(':')
     return filepath, int(linenum)
 
 
 def extract_errors(flow_output):
     root = Node('root')
 
-    for error in flow_output.split('\n\n'):
+    for error in flow_output.split('\n\n\n')[:-1]:
         lines = error.strip().split('\n')
-        try:
-            filepath, linenum = parse_header(lines[0])
-        except ParseError:
-            # Ignore output that is not flow error.
-            # For example, flow stdout ends with the line: 'Found 92 errors'
-            continue
+        filepath, linenum = parse_header(lines[0])
 
         msg = LinterErrorMessage(lines[1:], linenum)
         path = filepath.split('/')
